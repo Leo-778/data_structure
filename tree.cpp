@@ -1,6 +1,7 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 //树的基本操作
 #define MaxSize 100
 
@@ -17,13 +18,24 @@ typedef struct LinkNode
 {
     BiTree data;
     struct LinkNode *next;
-}LinkNode;
+}LinkNode,* LNode;
 
+//链式队列
 typedef struct{
     LinkNode *front, *rear;
 } LinkQueue;
 
+void InitQueue(LinkQueue &Q);
+bool IsEmpty(LinkQueue Q);
+bool DeQueue(LinkQueue &Q, BiTree &t);
+void EnQueue(LinkQueue &Q, BiTree t);
+
+void PreOrder(BiTree T);
+void InOrder(BiTree T);
+void PostOrder(BiTree T);
+void visit(BiTree T);
 int treeDepth(BiTree T);
+void LevelOrder(BiTree T);
 
 int main(int argc, char const *argv[])
 {
@@ -34,20 +46,33 @@ int main(int argc, char const *argv[])
     root->lchild = NULL;
     root->rchild = NULL;
 
-    BiTNode *p = (BiTree)malloc(sizeof(BiTNode));
-    p->data = {2};
-    p->lchild = NULL;
-    p->rchild = NULL;
-    root->lchild = p;
+    BiTNode *p1 = (BiTree)malloc(sizeof(BiTNode));
+    p1->data = {3};
+    p1->lchild = NULL;
+    p1->rchild = NULL;
+    root->lchild = p1;
 
-    printf("%d", treeDepth(root));
+    BiTNode *p2 = (BiTree)malloc(sizeof(BiTNode));
+    p2->data = {5};
+    p2->lchild = NULL;
+    p2->rchild = NULL;
+    root->rchild = p2;
 
+    BiTNode *p3 = (BiTree)malloc(sizeof(BiTNode));
+    p3->data = {4};
+    p3->lchild = NULL;
+    p3->rchild = NULL;
+    p1->rchild = p3;
+
+    LevelOrder(root);
+    //printf("%d", treeDepth(root));
+    //visit(root);
     return 0;
 }
 
 //访问节点打印字符
 void visit(BiTree T){
-    printf("%c",T->data);
+    printf("%d ",T->data);
 }
 //访问节点打印字符
 // void visit(BiTree T){
@@ -93,11 +118,68 @@ int treeDepth(BiTree T){
     }
 }
 
-//初始化队列
+//初始化队列(不带头结点)
+void InitQueue(LinkQueue &Q){
+    Q.front = NULL;
+    Q.rear = NULL;
+    return;
+}
 
+//判断队列是否为空(不带头结点)
+bool IsEmpty(LinkQueue Q){
+    if(Q.front==NULL){
+        return true;
+    }
+    else
+        return false;
+}
 
-//二叉树层次遍历
+//入队(不带头结点)
+void EnQueue(LinkQueue &Q,BiTree t){
+    LNode s = (LNode)malloc(sizeof(LinkNode));
+    s->data = t;
+    s->next = NULL;
+    if(Q.front==NULL){
+        Q.front = s;
+        Q.rear = s;
+    }   
+    else{
+        Q.rear->next = s;
+        Q.rear = s;
+    }
+    return;
+}
+
+//出队(不带头结点)
+bool DeQueue(LinkQueue &Q,BiTree &t){
+    if(Q.front==NULL){
+        return false;
+    }
+    LinkNode *p = Q.front;
+    t = p->data;
+    Q.front = p->next;
+    if(Q.rear==p){
+        Q.rear = NULL;
+        Q.front = NULL;
+    }
+    free(p);
+    return true;
+}
+
+//二叉树层次遍历(不带头结点的链式队列)
 void LevelOrder(BiTree T){
     LinkQueue Q;
+    InitQueue(Q);
+    BiTree p;
+    EnQueue(Q, T);
+    while (!IsEmpty(Q))
+    {
+        DeQueue(Q,p);
+        visit(p);
+        if (p->lchild != NULL)
+            EnQueue(Q, p->lchild);
+        if (p->rchild != NULL)
+            EnQueue(Q, p->rchild);
+    }
 
 }
