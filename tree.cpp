@@ -13,6 +13,13 @@ typedef struct BiTNode
     struct BiTNode *parent;
 }BiTNode,* BiTree;
 
+//线索二叉树结点
+typedef struct ThreadNode{
+    int data;
+    struct ThreadNode *lchild, *rchild;
+    int ltag, rtag;
+}ThreadNode,*ThreadTree;
+
 //链式队列节点
 typedef struct LinkNode
 {
@@ -30,6 +37,7 @@ bool IsEmpty(LinkQueue Q);
 bool DeQueue(LinkQueue &Q, BiTree &t);
 void EnQueue(LinkQueue &Q, BiTree t);
 
+BiTree CreateBTree();
 void PreOrder(BiTree T);
 void InOrder(BiTree T);
 void PostOrder(BiTree T);
@@ -41,28 +49,32 @@ int main(int argc, char const *argv[])
 {
     BiTree root = NULL;
 
-    root = (BiTree)malloc(sizeof(BiTNode));
-    root->data = {1};
-    root->lchild = NULL;
-    root->rchild = NULL;
+    // int a[10] = { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
 
-    BiTNode *p1 = (BiTree)malloc(sizeof(BiTNode));
-    p1->data = {3};
-    p1->lchild = NULL;
-    p1->rchild = NULL;
-    root->lchild = p1;
+    // root = (BiTree)malloc(sizeof(BiTNode));
+    // root->data = {1};
+    // root->lchild = NULL;
+    // root->rchild = NULL;
 
-    BiTNode *p2 = (BiTree)malloc(sizeof(BiTNode));
-    p2->data = {5};
-    p2->lchild = NULL;
-    p2->rchild = NULL;
-    root->rchild = p2;
+    // BiTNode *p1 = (BiTree)malloc(sizeof(BiTNode));
+    // p1->data = {3};
+    // p1->lchild = NULL;
+    // p1->rchild = NULL;
+    // root->lchild = p1;
 
-    BiTNode *p3 = (BiTree)malloc(sizeof(BiTNode));
-    p3->data = {4};
-    p3->lchild = NULL;
-    p3->rchild = NULL;
-    p1->rchild = p3;
+    // BiTNode *p2 = (BiTree)malloc(sizeof(BiTNode));
+    // p2->data = {5};
+    // p2->lchild = NULL;
+    // p2->rchild = NULL;
+    // root->rchild = p2;
+
+    // BiTNode *p3 = (BiTree)malloc(sizeof(BiTNode));
+    // p3->data = {4};
+    // p3->lchild = NULL;
+    // p3->rchild = NULL;
+    // p1->rchild = p3;
+
+    root = CreateBTree();
 
     LevelOrder(root);
     //printf("%d", treeDepth(root));
@@ -72,7 +84,7 @@ int main(int argc, char const *argv[])
 
 //访问节点打印字符
 void visit(BiTree T){
-    printf("%d ",T->data);
+    printf("%c ",T->data);
 }
 //访问节点打印字符
 // void visit(BiTree T){
@@ -182,4 +194,20 @@ void LevelOrder(BiTree T){
             EnQueue(Q, p->rchild);
     }
 
+}
+
+//根据先序遍历构建二叉树
+BiTree CreateBTree()
+{
+    BiTree bt = NULL;
+    char ch;
+    scanf("%c", &ch);
+    if (ch != '#')
+    {
+        bt = new BiTNode;
+        bt->data = ch;
+        bt->lchild = CreateBTree();
+        bt->rchild = CreateBTree();
+    }
+    return bt;
 }
