@@ -59,12 +59,16 @@ void LevelOrder2(BiTree T);
 void PreOrderNonRec(BiTree T);
 void InOrderNonRec(BiTree &T);
 void PostOrderNonRec(BiTree &T);
+int CountNodes(BiTree T);
+int CountLeaves(BiTree T);
+int CountKNodes(BiTree T, int k);
 
 int main(int argc, char const *argv[])
 {
     BiTree root = nullptr;
 
     root = CreateBTree();//ABDH##I##E##CF#J##G##
+    int a;
 
     LevelOrder(root);
     printf("\n");
@@ -72,7 +76,8 @@ int main(int argc, char const *argv[])
     printf("\n");
     printf("%d\n", treeDepth(root));
     PostOrderNonRec(root);
-    printf("\n");
+    a = CountKNodes(root,4);
+    printf("\n%d\n",a);
     PostOrder(root);
     return 0;
 }
@@ -337,4 +342,29 @@ void PostOrderNonRec(BiTree &T){
         Pop(S2, p);
         visit(p);
     }
+}
+
+//求树的结点个数
+int CountNodes(BiTree T){
+    if (T==nullptr)
+        return 0;
+    return CountNodes(T->lchild) + CountNodes(T->rchild)+1;
+}
+
+//求树的叶子结点的个数
+int CountLeaves(BiTree T){
+    if(T==nullptr)
+        return 0;
+    if(T->lchild==nullptr&&T->rchild==nullptr)
+        return 1;
+    return CountLeaves(T->rchild) + CountLeaves(T->lchild);
+}
+
+//求二叉树第k层的结点个数
+int CountKNodes(BiTree T,int k){
+    if(T==nullptr)
+        return 0;
+    if(k==1)
+        return 1;
+    return CountKNodes(T->lchild, k - 1) + CountKNodes(T->rchild, k - 1);
 }
