@@ -32,10 +32,21 @@ typedef struct{
     LinkNode *front, *rear;
 } LinkQueue;
 
+//定义栈
+typedef struct{
+    BiTree data[MaxSize];
+    int top;
+} SqStack;
+
 void InitQueue(LinkQueue &Q);
 bool IsEmpty(LinkQueue Q);
 bool DeQueue(LinkQueue &Q, BiTree &t);
 void EnQueue(LinkQueue &Q, BiTree t);
+
+void InitStack(SqStack &S);
+bool StackIsEmpty(SqStack &S);
+bool Push(SqStack &S, BiTree x);
+bool Pop(SqStack &S, BiTree &x);
 
 BiTree CreateBTree();
 void PreOrder(BiTree T);
@@ -44,41 +55,25 @@ void PostOrder(BiTree T);
 void visit(BiTree T);
 int treeDepth(BiTree T);
 void LevelOrder(BiTree T);
+void LevelOrder2(BiTree T);
+void PreOrderNonRec(BiTree T);
+void InOrderNonRec(BiTree &T);
+void PostOrderNonRec(BiTree &T);
 
 int main(int argc, char const *argv[])
 {
-    BiTree root = NULL;
+    BiTree root = nullptr;
 
-    // int a[10] = { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
-
-    // root = (BiTree)malloc(sizeof(BiTNode));
-    // root->data = {1};
-    // root->lchild = NULL;
-    // root->rchild = NULL;
-
-    // BiTNode *p1 = (BiTree)malloc(sizeof(BiTNode));
-    // p1->data = {3};
-    // p1->lchild = NULL;
-    // p1->rchild = NULL;
-    // root->lchild = p1;
-
-    // BiTNode *p2 = (BiTree)malloc(sizeof(BiTNode));
-    // p2->data = {5};
-    // p2->lchild = NULL;
-    // p2->rchild = NULL;
-    // root->rchild = p2;
-
-    // BiTNode *p3 = (BiTree)malloc(sizeof(BiTNode));
-    // p3->data = {4};
-    // p3->lchild = NULL;
-    // p3->rchild = NULL;
-    // p1->rchild = p3;
-
-    root = CreateBTree();
+    root = CreateBTree();//ABDH##I##E##CF#J##G##
 
     LevelOrder(root);
-    //printf("%d", treeDepth(root));
-    //visit(root);
+    printf("\n");
+    LevelOrder2(root);
+    printf("\n");
+    printf("%d\n", treeDepth(root));
+    PostOrderNonRec(root);
+    printf("\n");
+    PostOrder(root);
     return 0;
 }
 
@@ -91,7 +86,7 @@ void visit(BiTree T){
 
 // }
 
-//先序遍历
+//先序遍历递归版
 void PreOrder(BiTree T){
     if(T!=NULL){
         visit(T);
@@ -100,7 +95,7 @@ void PreOrder(BiTree T){
     }
 }
 
-//中序遍历
+//中序遍历递归版
 void InOrder(BiTree T){
     if(T!=NULL){
         InOrder(T->lchild);
@@ -109,7 +104,7 @@ void InOrder(BiTree T){
     }
 }
 
-//后序遍历
+//后序遍历递归版
 void PostOrder(BiTree T){
     if(T!=NULL){
         PostOrder(T->lchild);
@@ -130,6 +125,7 @@ int treeDepth(BiTree T){
     }
 }
 
+/********************************队列操作**************************************/
 //初始化队列(不带头结点)
 void InitQueue(LinkQueue &Q){
     Q.front = NULL;
@@ -146,11 +142,11 @@ bool IsEmpty(LinkQueue Q){
         return false;
 }
 
-//入队(不带头结点)
+//队列入队(不带头结点)
 void EnQueue(LinkQueue &Q,BiTree t){
     LNode s = (LNode)malloc(sizeof(LinkNode));
     s->data = t;
-    s->next = NULL;
+    s->next = nullptr;
     if(Q.front==NULL){
         Q.front = s;
         Q.rear = s;
@@ -162,7 +158,7 @@ void EnQueue(LinkQueue &Q,BiTree t){
     return;
 }
 
-//出队(不带头结点)
+//队列出队(不带头结点)
 bool DeQueue(LinkQueue &Q,BiTree &t){
     if(Q.front==NULL){
         return false;
@@ -177,6 +173,42 @@ bool DeQueue(LinkQueue &Q,BiTree &t){
     free(p);
     return true;
 }
+
+/********************************队列操作**************************************/
+
+/********************************栈操作***************************************/
+//初始化栈
+void InitStack(SqStack &S){
+    S.top = -1;
+}
+
+//判断栈是否为空
+bool StackIsEmpty(SqStack &S){
+    if(S.top==-1)
+        return true;
+    else
+        return false;
+}
+
+//进栈
+bool Push(SqStack &S,BiTree x){
+    if (S.top==MaxSize-1)
+        return false;
+    S.top++;
+    S.data[S.top] = x;
+    return true;
+}
+
+//出栈
+bool Pop(SqStack &S,BiTree &x){
+    if(S.top==-1)
+        return false;
+    x = S.data[S.top];
+    S.top--;
+    return true;
+}
+
+/********************************栈操作***************************************/
 
 //二叉树层次遍历(不带头结点的链式队列)
 void LevelOrder(BiTree T){
@@ -196,6 +228,24 @@ void LevelOrder(BiTree T){
 
 }
 
+//二叉树层次遍历(自上而下，从右到左)
+void LevelOrder2(BiTree T){
+    LinkQueue Q;
+    InitQueue(Q);
+    BiTree p;
+    EnQueue(Q, T);
+    while (!IsEmpty(Q))
+    {
+        DeQueue(Q,p);
+        visit(p);
+        if (p->rchild != NULL)
+            EnQueue(Q, p->rchild);
+        if (p->lchild != NULL)
+            EnQueue(Q, p->lchild);
+    }
+
+}
+
 //根据先序遍历构建二叉树
 BiTree CreateBTree()
 {
@@ -210,4 +260,81 @@ BiTree CreateBTree()
         bt->rchild = CreateBTree();
     }
     return bt;
+}
+
+//先遍历非递归版
+void PreOrderNonRec(BiTree T){
+    if (T==nullptr)
+        return;
+    SqStack S;
+    BiTree p;
+    p = T;
+    InitStack(S);
+    while (p!=nullptr || !StackIsEmpty(S))
+    {
+        while (p!=nullptr)
+        {
+            visit(p);
+            Push(S, p);
+            p = p->lchild;
+        }
+        if (!StackIsEmpty(S))
+        {
+            Pop(S, p);
+            p = p->rchild;
+        }
+    }
+}
+
+//中序遍历非递归版
+void InOrderNonRec(BiTree &T){
+    if (T==nullptr)
+        return;
+    SqStack S;
+    InitStack(S);
+    BiTree p;
+    p = T;
+    while (p!=nullptr || !StackIsEmpty(S))
+    {
+        while (p!=nullptr)
+        {
+            Push(S, p);
+            p = p->lchild;
+        }
+        if(!StackIsEmpty(S)){
+            Pop(S, p);
+            visit(p);
+            p = p->rchild;
+        }
+    }
+    return;
+}
+
+//后序遍历非递归版(就是从右往左的先序遍历)
+void PostOrderNonRec(BiTree &T){
+    if (T==nullptr)
+        return;
+    SqStack S1,S2;
+    InitStack(S1);
+    InitStack(S2);
+    BiTree p;
+    p = T;
+    while(p!=nullptr || !StackIsEmpty(S1)){
+        while (p!=nullptr)
+        {
+            Push(S1, p);
+            Push(S2, p);
+            p = p->rchild;
+        }
+        if (!StackIsEmpty(S1))
+        {
+            Pop(S1, p);
+            p = p->lchild;
+        }
+    }
+    while (!StackIsEmpty(S2))
+    {
+        Pop(S2, p);
+        visit(p);
+    }
 }
