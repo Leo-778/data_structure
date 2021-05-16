@@ -62,23 +62,33 @@ void PostOrderNonRec(BiTree &T);
 int CountNodes(BiTree T);
 int CountLeaves(BiTree T);
 int CountKNodes(BiTree T, int k);
+bool StructureCmp(BiTree T1, BiTree T2);
+void Mirror(BiTree &T);
+BiTree FindLCA(BiTree T, BiTree T1, BiTree T2);
+int CountSonDis(BiTree T, BiTree T1);
+int DistanceNodes(BiTree T, BiTree T1, BiTree T2);
 
 int main(int argc, char const *argv[])
 {
-    BiTree root = nullptr;
+    BiTree root1 = nullptr;
+    BiTree l, r;
 
-    root = CreateBTree();//ABDH##I##E##CF#J##G##
+    root1 = CreateBTree();//    ABDH##I##E##CF#J##G##
     int a;
 
-    LevelOrder(root);
+    l = root1->lchild->lchild->rchild;
+    r = root1->rchild->rchild;
+    LevelOrder(root1);
     printf("\n");
-    LevelOrder2(root);
+    visit(root1);
     printf("\n");
-    printf("%d\n", treeDepth(root));
-    PostOrderNonRec(root);
-    a = CountKNodes(root,4);
-    printf("\n%d\n",a);
-    PostOrder(root);
+    visit(l);
+    printf("\n");
+    visit(r);
+    a = DistanceNodes(root1, r, l);
+    printf("\n%d\n", a);
+    BiTree b=FindLCA(root1,l,r);
+    visit(b);
     return 0;
 }
 
@@ -86,10 +96,11 @@ int main(int argc, char const *argv[])
 void visit(BiTree T){
     printf("%c ",T->data);
 }
-//访问节点打印字符
-// void visit(BiTree T){
 
-// }
+//访问节点打印数字
+//  void visit(BiTree T){
+//     printf("%d ",T->data);
+//  }
 
 //先序遍历递归版
 void PreOrder(BiTree T){
@@ -367,4 +378,60 @@ int CountKNodes(BiTree T,int k){
     if(k==1)
         return 1;
     return CountKNodes(T->lchild, k - 1) + CountKNodes(T->rchild, k - 1);
+}
+
+//判断两颗二叉树是否结构相同
+bool StructureCmp(BiTree T1,BiTree T2){
+    if(T1==nullptr&&T2==nullptr)
+        return true;
+    if(T1==nullptr||T2==nullptr)
+        return false;
+    return StructureCmp(T1->lchild, T2->lchild) && StructureCmp(T1->rchild, T2->rchild);
+}
+
+//求二叉树镜像
+void Mirror (BiTree &T){
+    if (T==nullptr)
+        return;
+    BiTree p;
+    p = T->rchild;
+    T->rchild = T->lchild;
+    T->lchild = p;
+    Mirror(T->lchild);
+    Mirror(T->rchild);
+}
+
+//求两个节点的最低的公共祖先结点(LCA)
+BiTree FindLCA(BiTree T,BiTree T1,BiTree T2){
+    if (T==nullptr)
+        return nullptr;
+    if (T==T1||T==T2)
+        return T;
+    BiTree left = FindLCA(T->lchild, T1, T2);
+    BiTree right = FindLCA(T->rchild, T1, T2);
+    if (left != nullptr && right != nullptr)
+        return T;
+    return left ? left : right;
+}
+
+//求一个节点到他的子孙结点的距离
+int CountSonDis(BiTree T,BiTree T1){
+    if(T==nullptr)
+        return -1;
+    if(T==T1)
+        return 0;
+    int dis = CountSonDis(T->lchild, T1);
+    if(dis==-1)
+        dis = CountSonDis(T->rchild, T1);
+    if(dis!=-1)
+        return dis+1;
+    return -1;
+}
+
+//求任意两节点距离
+int DistanceNodes(BiTree T,BiTree T1,BiTree T2){
+    BiTree p = FindLCA(T, T1, T2);
+    int dis1 = CountSonDis(p, T1);
+    int dis2 = CountSonDis(p, T2);
+    return dis1 + dis2;
 }
