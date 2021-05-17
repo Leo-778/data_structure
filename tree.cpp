@@ -10,7 +10,6 @@ typedef struct BiTNode
 {
     int data;
     struct BiTNode *lchild,*rchild;
-    struct BiTNode *parent;
 }BiTNode,* BiTree;
 
 //线索二叉树结点
@@ -67,6 +66,7 @@ void Mirror(BiTree &T);
 BiTree FindLCA(BiTree T, BiTree T1, BiTree T2);
 int CountSonDis(BiTree T, BiTree T1);
 int DistanceNodes(BiTree T, BiTree T1, BiTree T2);
+int TreeMinDepth(BiTree T);
 
 int main(int argc, char const *argv[])
 {
@@ -85,8 +85,8 @@ int main(int argc, char const *argv[])
     visit(l);
     printf("\n");
     visit(r);
-    a = DistanceNodes(root1, r, l);
-    printf("\n%d\n", a);
+    a = TreeMinDepth(root1);
+    printf("\na= %d\n", a);
     BiTree b=FindLCA(root1,l,r);
     visit(b);
     return 0;
@@ -434,4 +434,16 @@ int DistanceNodes(BiTree T,BiTree T1,BiTree T2){
     int dis1 = CountSonDis(p, T1);
     int dis2 = CountSonDis(p, T2);
     return dis1 + dis2;
+}
+
+//找出二叉树中某个结点的所有祖先结点
+BiTree FindAllAncestors(BiTree T,BiTree T1){
+    
+}
+
+//求树的最小深度
+int TreeMinDepth(BiTree T){
+    if(T==nullptr)
+        return 0;
+    return TreeMinDepth(T->lchild) > TreeMinDepth(T->rchild) ? TreeMinDepth(T->rchild) + 1 : TreeMinDepth(T->lchild)+1;
 }
