@@ -4,7 +4,7 @@
 #include <string.h>
 //树的基本操作
 #define MaxSize 100
-
+ 
 //二叉树的结点（链式存储）
 typedef struct BiTNode
 {
@@ -67,28 +67,34 @@ BiTree FindLCA(BiTree T, BiTree T1, BiTree T2);
 int CountSonDis(BiTree T, BiTree T1);
 int DistanceNodes(BiTree T, BiTree T1, BiTree T2);
 int TreeMinDepth(BiTree T);
+void PrintPostOrder(int pos1, int pos2, int n);
+
+
+int pre_order[9] = {1,2,4,7,3,5,8,9,6};
+int in_order[9] = {4,7,2,1,8,5,9,3,6};
+
 
 int main(int argc, char const *argv[])
 {
-    BiTree root1 = nullptr;
-    BiTree l, r;
+    // BiTree root1 = nullptr;
+    // BiTree l, r;
+    PrintPostOrder(0, 0, 9);
+    // root1 = CreateBTree();//    ABDH##I##E##CF#J##G##
+    // int a;
 
-    root1 = CreateBTree();//    ABDH##I##E##CF#J##G##
-    int a;
-
-    l = root1->lchild->lchild->rchild;
-    r = root1->rchild->rchild;
-    LevelOrder(root1);
-    printf("\n");
-    visit(root1);
-    printf("\n");
-    visit(l);
-    printf("\n");
-    visit(r);
-    a = TreeMinDepth(root1);
-    printf("\na= %d\n", a);
-    BiTree b=FindLCA(root1,l,r);
-    visit(b);
+    // l = root1->lchild->lchild->rchild;
+    // r = root1->rchild->rchild;
+    // LevelOrder(root1);
+    // printf("\n");
+    // visit(root1);
+    // printf("\n");
+    // visit(l);
+    // printf("\n");
+    // visit(r);
+    // a = TreeMinDepth(root1);
+    // printf("\na= %d\n", a);
+    // BiTree b=FindLCA(root1,l,r);
+    // visit(b);
     return 0;
 }
 
@@ -437,13 +443,29 @@ int DistanceNodes(BiTree T,BiTree T1,BiTree T2){
 }
 
 //找出二叉树中某个结点的所有祖先结点
-BiTree FindAllAncestors(BiTree T,BiTree T1){
+// BiTree FindAllAncestors(BiTree T,BiTree T1){
     
-}
+// }
 
 //求树的最小深度
 int TreeMinDepth(BiTree T){
     if(T==nullptr)
         return 0;
     return TreeMinDepth(T->lchild) > TreeMinDepth(T->rchild) ? TreeMinDepth(T->rchild) + 1 : TreeMinDepth(T->lchild)+1;
+}
+
+//二叉树前序后序推中序
+void PrintPostOrder(int pos1,int pos2,int n){
+    if(n==1){
+        printf("%d ", pre_order[pos1]);
+        return;
+    }
+    if(n==0)
+        return;
+    int i = 0;
+    for (i = 0; pre_order[pos1] != in_order[pos2 + i]; i++)
+        ;
+    PrintPostOrder(pos1 + 1, pos2, i);
+    PrintPostOrder(pos1 + i + 1, pos2 + i + 1, n - i - 1);
+    printf("%d ", pre_order[pos1]);
 }
