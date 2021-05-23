@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MaxSize 100
+
 //线索二叉树结点
 typedef struct ThreadNode{
     int data;
@@ -36,6 +38,10 @@ void visit(ThreadTree T);
 int treeDepth(ThreadTree T);
 void LevelOrder(ThreadTree T);
 void LevelOrder2(ThreadTree T);
+void CreatInThread(ThreadTree T);
+void CreatPreThread(ThreadTree T);
+void CreatPostThread(ThreadTree T);
+ThreadTree CreateIntBTree();
 
 ThreadTree pre=nullptr;
 
@@ -43,37 +49,37 @@ int main(int argc, char const *argv[])
 {
     
     ThreadTree root = nullptr;//线索二叉树
-    ThreadTree l;
-    
+   // ThreadTree l;
+    //int a[MaxSize] = {1  2  3  4  -1  -1  5  -1  -1  6  -1  -1  7  8  -1  9  -1  -1  0  -1  -1};
+
     //PrintPostOrder(0, 0, 9);
-    root = CreateBTree();//    ABDH##I##E##CF#J##G##
+    root = CreateIntBTree();//    ABDH##I##E##CF#J##G##    1 2 3 4 ##5##6##78#9##0##
 
-    l = root->lchild->lchild->rchild;
 
-    InOrder(root);
+    PreOrder(root);
 
-    printf("houji = %c ", l->lchild->lchild->data);
+    //printf("houji = %d ", root->lchild->rchild->data);
     return 0;
 }
 
 //访问节点打印字符
-// void visit(ThreadTree T){
-//     printf("%c ",T->data);
-// }
-
-//线索二叉树
-void visit(ThreadTree q){
-    if(q->lchild==nullptr){
-        q->lchild = pre;
-        q->ltag = 1;
-    }
-    if (pre!=nullptr&&pre->rchild==nullptr)
-    {
-        pre->rchild = q;
-        pre->rtag = 1;
-    }
-    pre = q;
+void visit(ThreadTree T){
+    printf("%d ",T->data);
 }
+
+// 线索二叉树
+// void visit(ThreadTree q){
+//     if(q->lchild==nullptr){
+//         q->lchild = pre;
+//         q->ltag = 1;
+//     }
+//     if (pre!=nullptr&&pre->rchild==nullptr)
+//     {
+//         pre->rchild = q;
+//         pre->rtag = 1;
+//     }
+//     pre = q;
+// }
 
 //先序遍历递归版
 void PreOrder(ThreadTree T){
@@ -176,4 +182,139 @@ ThreadTree CreateBTree()
         bt->rchild = CreateBTree();
     }
     return bt;
+}
+
+//二叉树层次遍历(不带头结点的链式队列)
+void LevelOrder(ThreadTree T){
+    LinkQueue Q;
+    InitQueue(Q);
+    ThreadTree p;
+    EnQueue(Q, T);
+    while (!IsEmpty(Q))
+    {
+        DeQueue(Q,p);
+        visit(p);
+        if (p->lchild != NULL)
+            EnQueue(Q, p->lchild);
+        if (p->rchild != NULL)
+            EnQueue(Q, p->rchild);
+    }
+
+}
+
+//二叉树层次遍历(自上而下，从右到左)
+void LevelOrder2(ThreadTree T){
+    LinkQueue Q;
+    InitQueue(Q);
+    ThreadTree p;
+    EnQueue(Q, T);
+    while (!IsEmpty(Q))
+    {
+        DeQueue(Q,p);
+        visit(p);
+        if (p->rchild != NULL)
+            EnQueue(Q, p->rchild);
+        if (p->lchild != NULL)
+            EnQueue(Q, p->lchild);
+    }
+
+}
+
+//中序先线索化
+void CreatInThread(ThreadTree T){
+    pre = nullptr;
+    if(T!=nullptr){
+        InOrder(T);
+        if (pre->rchild==nullptr)
+        {
+            pre->rtag = 1;
+        }
+        
+    }
+}
+
+//先序先线索化
+void CreatPreThread(ThreadTree T){
+    pre = nullptr;
+    if(T!=nullptr){
+        PreOrder(T);
+        if (pre->rchild==nullptr)
+        {
+            pre->rtag = 1;
+        }
+        
+    }
+}
+
+//后序先线索化
+void CreatPostThread(ThreadTree T){
+    pre = nullptr;
+    if(T!=nullptr){
+        PostOrder(T);
+        if (pre->rchild==nullptr)
+        {
+            pre->rtag = 1;
+        }
+        
+    }
+}
+
+//根据先序遍历构建二叉树
+ThreadTree CreateIntBTree()
+{
+    ThreadTree bt = NULL;
+    int ch;
+    scanf("%d ", &ch);
+    if (ch != -1)
+    {
+        bt = new ThreadNode;
+        bt->data = ch;
+        bt->lchild = CreateBTree();
+        bt->rchild = CreateBTree();
+    }
+    return bt;
+}
+
+//找到以P为根的子树中，第一个被中序遍历的节点
+ThreadNode *Firstnode(ThreadNode *p){
+    //循环找到最坐下节点（不一定是叶结点）
+    while (p->ltag==0)
+        p = p->lchild;
+    return p;
+}
+//在中序线索二叉树中找到节点p的后继节点
+ThreadNode *Nextnode(ThreadNode *p){
+    //右子树中最左下节点
+    if(p->rtag==0)
+        return Firstnode(p->rchild);
+    else
+        return p->rchild;//rtag==1直接返回搜索
+}
+//对中序线索二叉树进行中序遍历（利用线索实现的非递归算法）
+void Inorder(ThreadNode *T){
+    for (ThreadNode *p = Firstnode(T); p != nullptr;p=Nextnode(p))
+        visit(p);
+}
+
+
+//中序前驱
+//找到以P为根的子树中，第一个被中序遍历的节点
+ThreadNode *Lastnode(ThreadNode *p){
+    //循环找到最坐下节点（不一定是叶结点）
+    while (p->ltag==0)
+        p = p->lchild;
+    return p;
+}
+//在中序线索二叉树中找到节点p的前驱节点
+ThreadNode *Prenode(ThreadNode *p){
+    //右子树中最左下节点
+    if(p->ltag==0)
+        return Lastnode(p->lchild);
+    else
+        return p->lchild;//ltag==1直接返回搜索
+}
+//对中序线索二叉树进行中序遍历（利用线索实现的非递归算法）
+void Inorder(ThreadNode *T){
+    for (ThreadNode *p = Lastnode(T); p != nullptr;p=Prenode(p))
+        visit(p);
 }
