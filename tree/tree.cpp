@@ -78,12 +78,7 @@ int main(int argc, char const *argv[])
     //PrintPostOrder(0, 0, 9);
     root1 = CreateBTree();//    ABDH##I##E##CF#J##G##
 
-    // 访问p的前驱结点
-    l = root1->lchild->lchild->rchild;
-    p = l;
-    InOrder(root1);
-    printf("l = %c\n", l->data);
-    printf("l'pre = %c ",final->data);
+    LevelOrder(root1);
 
     return 0;
 }

@@ -16,15 +16,13 @@ int DeleteBST(BSTree &T, int key);
 
 int main(int argc, char const *argv[])
 {
-    int a[5] = {3,4,2,5,9};
+    int a[8] = {50,66,60,26,21,30,70,68};
     BSTree T = NULL;
-    Creat_BST(T, a, 5);
+    Creat_BST(T, a, 8);
     printf("中序遍历二叉排序树：\n");
     order(T);
     printf("\n");
-    printf("删除3后，中序遍历二叉排序树：\n");
-    DeleteBST(T,3);
-    order(T);
+    
     return 0;
 }
 
