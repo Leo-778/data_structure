@@ -122,13 +122,7 @@ AVLTree AVLInsert(AVLTree &T,int k){
 /* 前序遍历AVL树，并打印节点高度 */
 void PreOrder_Traverse(AVLTree nod)
 {
-    if (nod != NULL)
-    {
-        //printf("data = %d blance = %d\n", nod->key, nod->blance);
-        printf("%d ", nod->key);
-        PreOrder_Traverse(nod->lchild);
-        PreOrder_Traverse(nod->rchild);
-    }
+    
 }
 
 void InOrder(AVLTree T){
