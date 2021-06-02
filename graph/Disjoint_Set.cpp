@@ -14,7 +14,7 @@ void Initialise(int parent[],int rank[]){
 
 int Find_root(int x,int parent[]){
     int x_root = x;
-    while (x_root!=-1)
+    while (parent[x_root]!=-1)
     {
         x_root = parent[x_root];
     }
@@ -29,14 +29,14 @@ int Union_Vertices(int x,int y,int parent[],int rank[]){
     else{
         if(rank[x_root] > rank[y_root])
             parent[y_root] = x_root;
-        if(rank[y_root] > rank[x_root])
+        else if(rank[y_root] > rank[x_root])
             parent[x_root] = y_root;
         else{
             parent[x_root] = y_root;
             rank[y_root]++;
         }
+        return 1;
     }
-    return 1;
 }
 
 int main(int argc, char const *argv[])
@@ -45,9 +45,7 @@ int main(int argc, char const *argv[])
     int rank[VERTICES] = {0};
     Initialise(parent, rank);
     int edges[5][2] = {
-        {0, 1}, {1, 2}, {1, 3},
-         {3, 4}, {2, 5}
-    };
+        {0, 1}, {1, 2}, {1, 3}, {3, 4}, {2, 5}};
     for (int i = 0; i < 5; i++)
     {   
         int x = edges[i][0];
