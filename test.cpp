@@ -1,61 +1,57 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#define max 16
-
-void tt(int n);
-int *fun(int n, int t[]);
-int hammingDistance(int x, int y);
-
-int main(int argc, char const *argv[])
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define VERTICES 6
+int find_root(int x, int parent[])  // 找到根节点
 {
-    // int value = 0;
-    // printf("%d\n", 6);
-    // tt(6);
-    // printf("%d\n", 8);
-    // tt(8);
-    // value = 6 & 8;
-    // printf("%d\n", value);
-    // tt(value);
-    int a = hammingDistance(1,4);
-    printf("\n%d", a);
-}
-
-
-int hammingDistance(int x, int y){
-    int value = 0;
-    int count = 0;
-    value = x ^ y;
-    while(value){
-        value = value & (value - 1);
-        count++;
+    int x_root = x;
+    while (parent[x_root] != -1)
+    {
+        x_root = parent[x_root];
     }
-    return count;
+    return x_root;
 }
-
-void tt(int n)
+int union_vertices(int x, int y, int parent[],int rank[])  // 让两个集合合并
 {
-    int binaryNumber = 0;
-    int remainder, i = 1;
- 
-    while (n!=0)
+    int x_root = find_root(x, parent);
+    int y_root = find_root(y, parent);
+    if (x_root == y_root)
+        return 0;
+    else
     {
-        remainder = n%2;
-        n /= 2;
-        binaryNumber += remainder*i;
-        i *= 10;
+        if (rank[x_root] > rank[y_root])  // 让 少的指向多 的
+        {
+            parent[y_root] = x_root;
+        }
+        else if (rank[x_root] < rank[y_root])
+            parent[x_root] = y_root;
+        else
+        {
+            parent[x_root] = y_root;   // 这个随便可以
+            rank[y_root]++;
+        }
+        return 1;
     }
-    printf("%08d\n", binaryNumber);
-    return;
 }
+int main(void)
+{
+    int parent[VERTICES] = { 0 };
+    int rank[VERTICES] = { 0 };
+    memset(rank, 0, sizeof(rank));
+    memset(parent, -1, sizeof(parent));
+    int edges[5][2] = { {0,1},{1,2},{1,3},{3,4},{2,5} };
 
-int *fun(int n,int t[]){
-    int i = 0;
-    while (n!=0)
+    for (int i = 0; i < 5; i++)
     {
-        t[i] = n % 2;
-        n = n / 2;
-        i++;
+        int x = edges[i][0];
+        int y = edges[i][1];
+        if (union_vertices(x, y, parent,rank) == 0)
+        {
+            printf("Cycle detected!\n");
+            exit(0);
+        }
     }
-    return t;
+    printf("No cycle found.\n");
+    return 0;
 }
