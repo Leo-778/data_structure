@@ -1,3 +1,6 @@
+#include<stdio.h>
+#include<stdlib.h>
+
 #define MAX_VERtEX_NUM 20                   //顶点的最大个数
 #define VRType int                          //表示顶点之间的关系的变量类型
 #define InfoType char                       //存储弧或者边额外信息的指针变量类型
