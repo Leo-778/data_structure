@@ -27,6 +27,7 @@
         "cstdlib": "cpp",
         "algorithm": "cpp",
         "array": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "cstdio": "cpp"
     }, // 格式化时调整include的顺序（按字母排序）
 }
