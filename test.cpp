@@ -1,8 +1,10 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #define VERTICES 6
+
+//并查集
+
 int find_root(int x, int parent[])  // 找到根节点
 {
     int x_root = x;
