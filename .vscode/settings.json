@@ -58,6 +58,7 @@
         "streambuf": "cpp",
         "utility": "cpp",
         "typeinfo": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "random": "cpp"
     }, // 格式化时调整include的顺序（按字母排序）
 }
