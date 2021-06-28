@@ -1,62 +1,17 @@
 #include<stdio.h>
-
-int count = 0;
-int isCorrect(int i, int j, char Q[4][4])
+#include<vector>
+using namespace std;
+int main(int argc, char const *argv[])
 {
-    int s, t;
-    for(s=i,t=0; t<4; t++)
-        if(Q[s][t]=='Q' && t!=j)
-            return 0;//判断行
-    for(t=j,s=0; s<4; s++)
-        if(Q[s][t]=='Q' && s!=i)
-            return 0;//判断列
-    for(s=i-1,t=j-1; s>=0&&t>=0; s--,t--)
-        if(Q[s][t]=='Q')
-            return 0;//判断左上方
-    for(s=i+1,t=j+1; s<4&&t<4;s++,t++)
-        if(Q[s][t]=='Q')
-            return 0;//判断右下方
-    for(s=i-1,t=j+1; s>=0&&t<4; s--,t++)
-        if(Q[s][t]=='Q')
-            return 0;//判断右上方
-    for(s=i+1,t=j-1; s<4&&t>=0; s++,t--)
-        if(Q[s][t]=='Q')
-            return 0;//判断左下方
-
-    return 1;//否则返回
-}
-
-void Queue(int j, char Q[4][4])
-{
-    int i,k;
-    if(j==4){//递归结束条件
-        for(i=0; i<4; i++){
-                //得到一个解，在屏幕上显示
-            for(k=0; k<4; k++)
-                printf("%c ", Q[i][k]);
-            printf("\n");
-        }
-        printf("\n");
-        count++;
-        return ;
+    vector<int> vi;
+    for (int i = 1; i <= 5; i++)
+    {
+        vi.push_back(i);//此时为1，2，3，4，5
     }
-    for(i=0; i<4; i++){
-        if(isCorrect(i, j, Q)){//如果Q[i][j]可以放置皇后
-            Q[i][j]='Q';//放置皇后
-            Queue(j+1, Q);//递归深度优先搜索解空间树
-            Q[i][j]='*';//这句代码就是实现回溯到上一层
-        }
+    vi.insert(vi.begin() + 2, -1);//将-1插入vi[2]的位置
+    for (int i = 0; i < vi.size(); i++)
+    {
+        printf("%d ", vi[i]);
     }
-}
-
-int main()
-{
-    char Q[4][4];
-    int i, j;
-    for(i=0; i<4; i++)
-        for(j=0; j<4; j++)
-            Q[i][j] = '*';
-    Queue(0, Q);
-    printf("The number of the answers are %d\n", count);
     return 0;
 }
