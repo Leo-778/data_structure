@@ -320,7 +320,7 @@ void InOrderNonRec(BiTree &T){
     return;
 }
 
-//后序遍历非递归版(就是从右往左的先序遍历)
+//后序遍历非递归版
 void PostOrderNonRec(BiTree &T){
     if (T==nullptr)
         return;
