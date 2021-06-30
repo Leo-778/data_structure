@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<algorithm>
 using namespace std;
-//判断二叉树是否对称
+// 完全二叉树的节点个数
 
 typedef struct BitNode{
     int key;
@@ -23,24 +23,10 @@ Bitree CreateBTree()
     return bt;
 }
 
-bool compare(Bitree p, Bitree q){
-    if (p==nullptr&&q==nullptr)
-        return true;
-    if (q!=nullptr&&p==nullptr)
-        return false;
-    if (q==nullptr&&p!=nullptr)
-        return false;
-    if(p->key != q->key)
-        return false;
-    return compare(p->rchild, q->lchild) && compare(p->lchild, q->rchild);
-}
-
-bool isSymmetric(Bitree t){
+int countNodes(Bitree t){
     if (t==nullptr)
-    {
-        return true;
-    }
-    return compare(t->lchild, t->rchild);
+        return 0;
+    return 1 + countNodes(t->rchild) + countNodes(t->lchild);
 }
 
 int main(int argc, char const *argv[])
@@ -48,6 +34,6 @@ int main(int argc, char const *argv[])
     Bitree root = nullptr;
     //PrintPostOrder(0, 0, 9);
     root = CreateBTree();//    ABDH##I##E##CF#J##G##
-    printf("%d", compare(root->rchild, root->lchild));
+    printf("%d", countNodes(root));
     return 0;
 }

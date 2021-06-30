@@ -20,8 +20,9 @@ typedef struct
 }LinkQueue;
 
 void Initqueue(LinkQueue &q){
-    q.front = q.rear = (LinkNode *)malloc(sizeof(LinkNode));
-    q.rear->next = NULL;
+    q.front = nullptr;
+    q.rear = NULL;
+    return;
 }
 
 bool Isempty(LinkQueue q){
@@ -46,48 +47,67 @@ void EnQueue(LinkQueue &q,Bitree t){
         q.rear->next = s;
         q.rear = s;
     }
+    return;
 }
 
-Bitree DeQueue(LinkQueue &q){
+bool DeQueue(LinkQueue &q,Bitree &t){
     if (Isempty(q))
     {
-        return NULL;
+        return false;
     }
     LNode p = q.front;
-    Bitree t = p->val;
+    t = p->val;
     q.front = p->next;
     if(q.rear==p){
         q.rear = NULL;
         q.front = NULL;
     }
     free(p);
-    return t;
+    return true;
 }
 
 void visit(Bitree T){
     printf("%c ",T->key);
 }
 
-void LevelOrder(Bitree t){
-    if (t==NULL)
-    {
-        return;
-    }
-    LinkQueue q;
-    Initqueue(q);
+void LevelOrder(Bitree T){
+    LinkQueue Q;
+    Initqueue(Q);
     Bitree p;
-    EnQueue(q, p);
-    while (!Isempty(q))
+    EnQueue(Q, T);
+    while (!Isempty(Q))
     {
-        p=DeQueue(q);
+        DeQueue(Q,p);
         visit(p);
-        if (p->lchild!=NULL)
-        {
-            EnQueue(q,p->lchild);
-        }
-        if (p->rchild!=NULL)
-        {
-            EnQueue(q, p->rchild);
-        }
+        if (p->lchild != NULL)
+            EnQueue(Q, p->lchild);
+        if (p->rchild != NULL)
+            EnQueue(Q, p->rchild);
     }
+
+}
+
+//根据先序遍历构建二叉树
+Bitree CreateBTree()
+{
+    Bitree bt = NULL;
+    char ch;
+    scanf("%c", &ch);
+    if (ch != '#')
+    {
+        bt = new BitNode;
+        bt->key = ch;
+        bt->lchild = CreateBTree();
+        bt->rchild = CreateBTree();
+    }
+    return bt;
+}
+
+int main(int argc, char const *argv[])
+{
+    Bitree root = nullptr;
+    //PrintPostOrder(0, 0, 9);
+    root = CreateBTree();//    ABDH##I##E##CF#J##G##
+    LevelOrder(root);
+    return 0;
 }
