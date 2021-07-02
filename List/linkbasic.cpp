@@ -64,7 +64,48 @@ bool ListDelete(LinkList &L, int i, ElemType &e){
     return true;        //删除成功
 }
 
+//按位查找，返回第i个元素
+LNode * GetElem(LinkList L, int i){
+    if(i<0)
+        return NULL;
+    LNode *p;// 指针p指向当前扫描到的结点 int j = 0;
+    int j = 1; //当前p指向的是第几个结点
+    p = L;     //L指向头结点，头结点是第0个结点(不存数据)
+    while (p!=NULL && j<i) { //循环找到第 i个结点
+        p=p->next;
+        j++;
+    }
+    return p;
+}
 
+//按值查找，找到数据域==e的结点
+LNode * LocateElem(LinkList L,ElemType e) {
+    LNode *p = L; //从第1个结点开始查找数据域为e的结点
+    while (p != NULL && p->data != e)
+        p = p->next;
+    return p; //找到后返回该结 点指针， 否则返回NULL
+}
+
+//修改第i个结点的值为e
+bool AmendList(LinkList l,int i, ElemType e){
+    LinkList p;
+    p = GetElem(l, i);
+    if (p==NULL)
+    {
+        return false;
+    }
+    p->data = e;
+    return true;
+}
+void display(LinkList p) {
+    LinkList temp = p;//将temp指针重新指向头结点
+    //只要temp指针指向的结点的next不是Null，就执行输出语句。
+    while (temp) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
 /*********************************不带头结点***********************************/
 
 /**********************************带头结点************************************/
@@ -117,6 +158,47 @@ bool ListDelete(LinkList &L, int i, ElemType &e){
     return true;        //删除成功
 }
 
+//按位查找，返回第i个元素(带头结点)
+LNode * GetElem(LinkList L, int i){
+    if(i<0)
+        return NULL;
+    LNode *p;// 指针p指向当前扫描到的结点 int j = 0;
+    int j = 0; //当前p指向的是第几个结点
+    p = L;     //L指向头结点，头结点是第0个结点(不存数据)
+    while (p!=NULL && j<i) { //循环找到第 i个结点
+        p=p->next;
+        j++;
+    }
+    return p;
+}
+
+//按值查找，找到数据域==e的结点
+LNode * LocateElem(LinkList L,ElemType e) {
+    LNode *p = L ->next; //从第1个结点开始查找数据域为e的结点
+    while (p != NULL && p->data != e)
+        p = p->next;
+    return p; //找到后返回该结 点指针， 否则返回NULL
+}
+
+//修改第i个结点的值为e
+bool AmendList(LinkList l,int i, ElemType e){
+    LinkList p;
+    p = GetElem(l, i);
+    if (p==NULL)
+        return false;
+    p->data = e;
+    return true;
+}
+
+void display(LinkList p) {
+    LinkList temp = p;//将temp指针重新指向头结点
+    //只要temp指针指向的结点的next不是Null，就执行输出语句。
+    while (temp->next) {
+        temp = temp->next;
+        printf("%d ", temp->data);
+    }
+    printf("\n");
+}
 /**********************************带头结点************************************/
 
 //前插操作     在p结点之前插入元素e
@@ -155,29 +237,6 @@ bool DeleteNode (LNode *p) {
     free(q);                  //释放后继结点的存储空间
     return true;
 }
-
-//按位查找，返回第i个元素(带头结点)
-LNode * GetElem(LinkList L, int i){
-    if(i<0)
-        return NULL;
-    LNode *p;// 指针p指向当前扫描到的结点 int j = 0;
-    int j = 0; //当前p指向的是第几个结点
-    p = L;     //L指向头结点，头结点是第0个结点(不存数据)
-    while (p!=NULL && j<i) { //循环找到第 i个结点
-        p=p->next;
-        j++;
-    }
-    return p;
-}
-
-//按值查找，找到数据域==e的结点
-LNode * LocateElem(LinkList L,ElemType e) {
-    LNode *p = L ->next; //从第1个结点开始查找数据域为e的结点
-    while (p != NULL && p->data != e)
-        p = p->next;
-    return p; //找到后返回该结 点指针， 否则返回NULL
-}
-
 //求表的长度
 int Length(LinkList L){
     int len = 0; //统计表长
@@ -187,4 +246,40 @@ int Length(LinkList L){
         len++;
     }
     return len;
+}
+int main() {
+    LinkList p,address;
+    int x;
+    InitList(p);
+    LNode *s = (LNode * )malloc( sizeof(LNode));
+    s->data = 4;
+    s->next = NULL;
+    p = s;
+    //初始化链表（1，2，3，4）
+    for (int i = 3; i >0 ; i--)
+    {
+        InsertPriorNode(p, i);
+    }
+    
+    printf("初始化链表为：\n");
+    
+    display(p);
+    printf("在第4的位置插入元素5：\n");
+    ListInsert(p, 4, 5);
+    display(p);
+    printf("删除元素3:\n");
+    ListDelete(p, 3,x);
+    display(p);
+    printf("查找元素2的位置为：\n");
+    address = LocateElem(p, 2);
+    if (address == NULL) {
+        printf("没有该元素");
+    }
+    else {
+        printf("%d\n", address->data);
+    }
+    printf("更改第3的位置上的数据为7:\n");
+    AmendList(p, 3, 7);
+    display(p);
+    return 0;
 }
