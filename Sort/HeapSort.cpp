@@ -97,7 +97,7 @@ void DeleteTop(){
 
 int main(int argc, char const *argv[])
 {
-    int a[10] = {3, 2, 7, 6, 5, 8, 4, 1, 9, 0};
+    int a[10] = {19, 39, 42, 44, 53, 96, 91, 87, 99, 93};
     HeapSort(a, 10);
     
     return 0;

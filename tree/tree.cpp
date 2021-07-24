@@ -78,7 +78,7 @@ int main(int argc, char const *argv[])
     //PrintPostOrder(0, 0, 9);
     root1 = CreateBTree();//    ABDH##I##E##CF#J##G##
 
-    LevelOrder(root1);
+    PostOrderNonRec(root1);
 
     return 0;
 }
@@ -218,6 +218,14 @@ bool Pop(SqStack &S,BiTree &x){
     return true;
 }
 
+void showstack(SqStack s){
+    int i = s.top;
+    while (i!=-1)
+    {
+        visit(s.data[i--]);
+    }
+}
+
 /********************************栈操作***************************************/
 
 //二叉树层次遍历(不带头结点的链式队列)
@@ -341,6 +349,8 @@ void PostOrderNonRec(BiTree &T){
             Pop(S1, p);
             p = p->lchild;
         }
+        showstack(S2);
+        printf("\n");
     }
     while (!StackIsEmpty(S2))
     {
@@ -403,9 +413,9 @@ BiTree FindLCA(BiTree T,BiTree T1,BiTree T2){
         return T;
     BiTree left = FindLCA(T->lchild, T1, T2);
     BiTree right = FindLCA(T->rchild, T1, T2);
-    if (left != nullptr && right != nullptr)
+    if (left != nullptr && right != nullptr)//分别在左子树和右子树上
         return T;
-    return left ? left : right;
+    return left ? left : right;  //都在左子树或都在右子树
 }
 
 //求一个节点到他的子孙结点的距离
